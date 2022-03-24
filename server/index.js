@@ -11,18 +11,19 @@ const bot = linebot({
     channelAccessToken: process.env.LINE_BOT_ACCESS_TOKEN
 })
 
-const linebotParser = bot.parser()
+//const linebotParser = bot.parser()
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 /* Testing */
 app.post("/broadcast", (req, res) => {
+    console.log(`Recieved: ${req.body.message}`)
     try {
         bot.broadcast(req.body.message)
-        return res.sendStatus(200).send("Message sent")
+        return res.status(200).send("Message sent")
     }catch(err){
-        return res.sendStatus(403).send(`Error: ${err}`)
+        return res.status(403).send(`Error: ${err}`)
     }
 })
 
