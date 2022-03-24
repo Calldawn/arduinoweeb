@@ -7,3 +7,14 @@ Content-Type: application/json
 {
     "message": "Hello"
 }
+
+###
+POST https://linebot.osaka.milliax.me/broadcast
+Content-Type: application/json
+
+{
+    "message": "Hello"
+}
+
+###
+GET https://linebot.osaka.milliax.me

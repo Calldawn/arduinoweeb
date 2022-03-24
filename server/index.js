@@ -27,8 +27,14 @@ app.post("/broadcast", (req, res) => {
     }
 })
 
+/* Testing 2 */
+
+app.get("/",(req,res)=>{
+    return res.send("Hello World")
+})
+
 app.listen(port, () => {
-    console.log("Server Started")
+    console.log(`Server started at port ${port}`)
 })
 
 
