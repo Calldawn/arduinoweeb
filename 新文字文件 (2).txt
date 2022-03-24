@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset = utf-8 >
+    <title>Arduino死宿舍網路浪費我時間_操</title>
+  </head>
+  <body>
+  <br>我坐在此心已死，想放屁卻漏了屎 
+  <br>歲月磨平了稜角
+  <br>模糊了形狀
+  <br>於是我們從形形色色的人
+  <br>變成了色色的人
+        <form action="https://192.168.9.130/sw">
+        訊息：<input name="msg" type = "text"><br>
+        燈光：<input name = "light" type = "radio" value="on">開
+        <input name = "light" type = "radio" value="off" checked>關
+        <br><br>
+        <input type = "submit" value="送出">
+        </form>
+  </body>
+</html>
