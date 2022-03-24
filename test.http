@@ -1,1 +1,9 @@
 GET http://localhost:8000
+
+###
+POST http://localhost:8000/broadcast
+Content-Type: application/json
+
+{
+    "message": "Hello"
+}
