@@ -1,26 +1,27 @@
 #include <Ethernet.h>
-#include <SPI.h>
 #include <WebServer.h>
-#include <DHT.h>
 #include <Streaming.h>
+#include <SPI.h>
+#include <DHT.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-#define WEBDUINO_FAIL_MESSAGE "What the Hell you just doing!"
-LiquidCrystal_I2C lcd(0x27,16,2);
-DHT dht(A1, DHT11);
-//IP 位址：192.168.1.130
-//卡號：30-D1-6B-88-70-A1
-//子網遮罩：255,255,255,0
-//匝道：192,168,43,1
-IPAddress ip(192,168,9,130);
-IPAddress subnet(255,255,255,0);
-IPAddress gateway(192,168,9,254);
-static byte mac[] = {  0x30, 0xD1, 0x6B, 0x88, 0x70, 0xA9 };
-WebServer webserver("", 80);
 
-char name[16]="0";
-char value[16]="0";
-//網頁內容
+LiquidCrystal_I2C lcd(0x27,16,2);
+//設置LCD顯示器
+
+DHT dht(A1, DHT11);
+//設置溫濕度感測器
+
+IPAddress ip(192,168,1,130);
+IPAddress subnet(255,255,255,0);
+IPAddress gateway(192,168,1,1);
+static byte mac[] = {  0x30, 0xD1, 0x6B, 0x88, 0x70, 0xA9 };
+//設定IP位置、子網路遮罩、預設匝道、實體卡號
+
+WebServer webserver("", 80);
+//啟用網路伺服器，設定80埠
+
+//編寫網路原始碼
 P(hornhead) = 
 "<!doctype html>"
 "<html><head><meta charset = utf-8 >"
@@ -28,8 +29,9 @@ P(hornhead) =
 "<title>Arduino網站站</title>"
 "</head><body>";
 
-P(form) = 
-"<form action=\"http://192.168.9.130/sw\" method=\"post\">"
+
+P(form) = //網路表單
+"<form action=\"http://192.168.1.130/sw\" method=\"post\">"
 "訊息：<input name=\"msg\" type = \"text\"><br>"
 "燈光：<input name = \"light\" type = \"radio\" value=\"on\">開"
 "<input name = \"light\" type = \"radio\" value=\"off\" checked>關"
@@ -39,28 +41,31 @@ P(form) =
 
 P(hornfoot) = 
 "</body></html>";
-//網頁內容
 
 //宣告命令
 void defaultCmd(WebServer &server, WebServer::ConnectionType type, char *, bool){
   server.httpSuccess();
   if(type != WebServer::HEAD){
     server.printP(hornhead);
-    server << "<h1>溫溼度計計</h1>";
-    server << "<p>溫度度 : " << dht.readTemperature() << "&deg;C</p>";
-    server << "<p>濕度度 : " << dht.readHumidity() << "%</p>";
     server.printP(form);
     server.printP(hornfoot); 
   }
 }
+
+char name[16];
+char value[16];//宣告接收網頁表單的變數
+
 void postCmd(WebServer &server, WebServer::ConnectionType type, char *, bool){
   server.httpSuccess();
   if(type == WebServer::POST){
     lcd.clear();
+    server.printP(hornhead);
+    server << "<h1>溫濕度計計</h1>";
+    server << "<p>溫度度 : " << dht.readTemperature() << "&deg;C</p>";
+    server << "<p>濕度度 : " << dht.readHumidity() << "%</p>";
     while(server.readPOSTparam(name,16,  value, 16)){
-      server << "<p>" << name <<"的值是" << value << "</p>";
       if(strcmp(name,"msg") ==0){
-      server << "<br>" << value;
+      server << "<br>" << "訊息: " << value << "<br><br>且<br>";
       lcd.print(value);
       }
       if(strcmp(name,"light") ==0){
@@ -77,21 +82,23 @@ void postCmd(WebServer &server, WebServer::ConnectionType type, char *, bool){
           lcd.print("Light OFF!");
         }
       }
+      server.printP(hornfoot);
     }
   }
 }
-//命令
 
 void setup() {
   // put your setup code here, to run once:
-  Ethernet.begin(mac, ip, gateway, subnet);
+  
+  Ethernet.begin(mac, ip, gateway, subnet);//啟用網路擴充模組
+
   webserver.setDefaultCommand(&defaultCmd);
-  webserver.addCommand("sw", &postCmd);
-  webserver.begin();
+  webserver.addCommand("sw", &postCmd);//設置命令
+  webserver.begin();//啟動網路伺服器
+
   pinMode(8, OUTPUT);
-  Serial.begin(9600);
-  dht.begin();
-  lcd.init();
+  dht.begin();//啟動溫濕度感測器
+  lcd.init();//啟動顯示器
   lcd.backlight();
   lcd.setCursor(0,0);
   lcd.print("Arduino Start!");
@@ -101,6 +108,5 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  webserver.processConnection();
-  Serial.println(name);
+  webserver.processConnection();//處理用戶需求
 }
