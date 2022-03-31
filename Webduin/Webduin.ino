@@ -20,8 +20,8 @@ P(horn) = //網頁原始碼全都整理在這
 //宣告命令
 void defaultCmd(WebServer &server, WebServer::ConnectionType type, char *, bool){
   server.httpSuccess();
-  if(type != WebServer::HEAD){
-    server.printP(horn);
+  if(type != WebServer::HEAD){bj6eji3m//如果用戶要的不是抬頭檔
+    server.printP(horn);//就印出網頁內容
   }
 }
 //宣告命令
@@ -35,5 +35,5 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  webserver.processConnection();
+  webserver.processConnection();//處理用戶要求
 }
