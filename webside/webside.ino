@@ -34,6 +34,6 @@ void loop() {
       }
     }
     delay(1);
-    client.stop();
+    client.stop();//切斷與用戶的連線
   }
 }
